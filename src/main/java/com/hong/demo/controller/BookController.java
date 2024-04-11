@@ -46,6 +46,7 @@ import com.hong.demo.exceptions.ErrorDetails;
 @RestController
 @RequestMapping(value="/api/books")
 public class BookController {
+
     @Autowired
     BookService bookService;
 
@@ -101,10 +102,7 @@ public class BookController {
     public Review createBookReview(@PathVariable("bookId") Integer bookId, @Valid @RequestBody Review review, BindingResult errors){
         if(errors.hasErrors())
 	        throw new ValidationException(createErrorString(errors));
-        return bookService.addReviewToBook(bookId, review);
-        // Review savedReview = bookService.addReviewToBook(bookId, review);
-        // URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedReview.getId()).toUri();
-        // return ResponseEntity.created(location).body(savedReview);  
+        return bookService.addReviewToBook(bookId, review);  
     }
 
     @DeleteMapping("/{bookId}")
