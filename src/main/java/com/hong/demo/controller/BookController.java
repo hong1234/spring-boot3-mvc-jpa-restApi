@@ -45,8 +45,7 @@ import com.hong.demo.exceptions.ErrorDetails;
 
 @RestController
 @RequestMapping(value="/api/books")
-public class BookController
-{
+public class BookController {
     @Autowired
     BookService bookService;
 
@@ -69,7 +68,6 @@ public class BookController
         return bookService.getBookById(bookId);
     }
 
-    // @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public Book createBook(@Valid @RequestBody Book book, BindingResult errors){
@@ -98,7 +96,6 @@ public class BookController
     	return bookService.getBookReviews(bookId);
     }
 
-    // @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/{bookId}/reviews")
     @ResponseStatus(HttpStatus.CREATED)
     public Review createBookReview(@PathVariable("bookId") Integer bookId, @Valid @RequestBody Review review, BindingResult errors){
@@ -140,15 +137,6 @@ public class BookController
     //     errorDetails.setMessage(e.getMessage());
     //     // ResponseEntity(T body, HttpStatusCode status)
     //     return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
-    // }
-
-    // @ExceptionHandler
-    // public ResponseEntity<ErrorDetails> bindingException(ValidationException e) {
-    //     ErrorDetails errorDetails = new ErrorDetails();
-    //     errorDetails.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-    //     errorDetails.setMessage(e.getMessage());
-    //     // ResponseEntity(T body, HttpStatusCode status)
-    //     return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     // }
 
     // @ExceptionHandler
