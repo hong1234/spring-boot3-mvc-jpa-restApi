@@ -1,7 +1,7 @@
 package com.hong.demo.domain;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
+// import lombok.NoArgsConstructor;
 
 // import java.util.Date; // The @Temporal is a Hibernate JPA annotation that is used for java.util.Date or java.util.Calendar
 import java.util.List;

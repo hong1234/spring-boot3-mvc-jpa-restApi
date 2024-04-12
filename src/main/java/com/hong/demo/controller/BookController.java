@@ -6,8 +6,6 @@ import java.util.Optional;
 import java.net.URI;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,13 +40,18 @@ import com.hong.demo.exceptions.ResourceNotFoundException;
 import com.hong.demo.exceptions.ValidationException;
 import com.hong.demo.exceptions.ErrorDetails; 
 
+import lombok.AllArgsConstructor;
+// import lombok.extern.slf4j.Slf4j;
+
 
 @RestController
-@RequestMapping(value="/api/books")
+@AllArgsConstructor
+@RequestMapping(value=BookController.CONTROLLER_PATH)
 public class BookController {
 
-    @Autowired
-    BookService bookService;
+    public static final String CONTROLLER_PATH = "/api/books";
+
+    private final BookService bookService;
 
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)

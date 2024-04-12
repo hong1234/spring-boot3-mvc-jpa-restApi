@@ -17,14 +17,15 @@ import java.time.LocalDateTime;
 
 import com.hong.demo.exceptions.ErrorDetails;
 
+import lombok.AllArgsConstructor;
+// import lombok.extern.slf4j.Slf4j;
+
 @Service
+@AllArgsConstructor
 public class BookService {
 
-    @Autowired
-    BookRepository bookRepository;
-
-    @Autowired
-    ReviewRepository reviewRepository;
+    private final BookRepository bookRepository;
+    private final ReviewRepository reviewRepository;
 
     public Iterable<Book> getAllBooks() {
         return bookRepository.findAll();

@@ -3,8 +3,6 @@ package com.hong.demo.domain;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// import java.util.Date;
-
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
