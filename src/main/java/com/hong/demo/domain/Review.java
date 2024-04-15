@@ -26,7 +26,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
+// import com.fasterxml.jackson.annotation.JsonFormat;
 
 
 @Data
@@ -60,11 +60,11 @@ public class Review {
     @Column(name = "like_status")
     private LikeStatus likeStatus;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="Europe/Berlin")
+    // @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="Europe/Berlin")
     @Column(name="created_on", columnDefinition = "TIMESTAMP")
     private LocalDateTime createdOn = LocalDateTime.now();
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="Europe/Berlin")
+    // @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="Europe/Berlin")
     @Column(name="updated_on", columnDefinition = "TIMESTAMP")
     private LocalDateTime updatedOn;
     

@@ -22,7 +22,7 @@ import jakarta.persistence.*;
 // import jakarta.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
+// import com.fasterxml.jackson.annotation.JsonFormat;
 // import com.fasterxml.jackson.annotation.JsonIgnore;
 
 // import jakarta.validation.constraints.*;
@@ -52,11 +52,11 @@ public class Book {
     @Column(name = "content", nullable = false, columnDefinition="TEXT")
     private String content;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="Europe/Berlin")
+    // @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="Europe/Berlin")
     @Column(name="created_on", columnDefinition = "TIMESTAMP")
     private LocalDateTime createdOn = LocalDateTime.now();
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="Europe/Berlin")
+    // @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="Europe/Berlin")
     @Column(name="updated_on", columnDefinition = "TIMESTAMP")
     private LocalDateTime updatedOn;
         
