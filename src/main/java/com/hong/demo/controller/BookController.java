@@ -46,20 +46,20 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value=BookController.CONTROLLER_PATH)
+@RequestMapping(path=BookController.CONTROLLER_PATH, produces="application/json")
+// @CrossOrigin(origins = {"http://localhost:3000", "http://uicloud.com"})
 public class BookController {
 
     public static final String CONTROLLER_PATH = "/api/books";
 
     private final BookService bookService;
 
-    @GetMapping("")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Iterable<Book> listBooks(){
 	    return bookService.getAllBooks();
     }
 
-    // @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public Iterable<Book> searchBooksByTitle(@RequestParam String title){
@@ -72,7 +72,7 @@ public class BookController {
         return bookService.getBookById(bookId);
     }
 
-    @PostMapping("")
+    @PostMapping(consumes="application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public Book createBook(@Valid @RequestBody Book book, BindingResult errors){
         if(errors.hasErrors())
@@ -83,7 +83,7 @@ public class BookController {
         // return ResponseEntity.created(location).body(savedBook);
     }
 
-    @PutMapping("/{bookId}")
+    @PutMapping(path="/{bookId}", consumes="application/json")
     @ResponseStatus(HttpStatus.OK)
     public Book updateBook(@PathVariable("bookId") Integer bookId, @Valid @RequestBody  Book book, BindingResult errors){
     	if(errors.hasErrors())
@@ -94,18 +94,24 @@ public class BookController {
         // return ResponseEntity.created(location).body(updatedBook);
     }
 
-    @GetMapping("/{bookId}/reviews")
-    @ResponseStatus(HttpStatus.OK)
-    public List<Review> getReviewsOfBook(@PathVariable("bookId") Integer bookId){
-    	return bookService.getBookReviews(bookId);
-    }
+    // @PatchMapping(path="/{bookId}", consumes="application/json")
+    // @ResponseStatus(HttpStatus.OK)
+    // public Book patchBook(@PathVariable("bookId") Integer bookId, @Valid @RequestBody Book patch, Errors errors) {
+	//     if (patch.getTitle() != null) {}
+    // }
 
-    @PostMapping("/{bookId}/reviews")
+    @PostMapping(path="/{bookId}/reviews", consumes="application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public Review createBookReview(@PathVariable("bookId") Integer bookId, @Valid @RequestBody Review review, BindingResult errors){
         if(errors.hasErrors())
 	        throw new ValidationException(createErrorString(errors));
         return bookService.addReviewToBook(bookId, review);  
+    }
+
+    @GetMapping("/{bookId}/reviews")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Review> getReviewsOfBook(@PathVariable("bookId") Integer bookId){
+    	return bookService.getBookReviews(bookId);
     }
 
     @DeleteMapping("/{bookId}")
