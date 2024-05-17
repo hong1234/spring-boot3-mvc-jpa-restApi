@@ -30,6 +30,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 // import org.springframework.validation.Errors;
 
+import com.hong.demo.domain.ReviewDto;
+import com.hong.demo.domain.LikeStatus;
 import com.hong.demo.domain.Review;
 import com.hong.demo.domain.Book;
 import com.hong.demo.repository.ReviewRepository;
@@ -78,7 +80,6 @@ public class BookController {
         if(errors.hasErrors())
             throw new ValidationException(createErrorString(errors));
         return bookService.storeBook(book);
-        // Book savedBook = bookService.storeBook(book);
         // URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedBook.getId()).toUri();
         // return ResponseEntity.created(location).body(savedBook);
     }
@@ -100,12 +101,28 @@ public class BookController {
 	//     if (patch.getTitle() != null) {}
     // }
 
+    // @PostMapping(path="/{bookId}/reviews", consumes="application/json")
+    // @ResponseStatus(HttpStatus.CREATED)
+    // public Review createBookReview(@PathVariable("bookId") Integer bookId, @Valid @RequestBody Review review, BindingResult errors){
+    //     if(errors.hasErrors())
+	//         throw new ValidationException(createErrorString(errors));
+    //     return bookService.addReviewToBook(bookId, review);  
+    // }
+
+    private Review getReview(ReviewDto reviewDto){
+        Review review = new Review();
+        review.setName(reviewDto.getName());
+        review.setEmail(reviewDto.getEmail());
+        review.setContent(reviewDto.getContent());
+        review.setLikeStatus(LikeStatus.valueOf(reviewDto.getLikeStatus()));
+        return review;
+    }
+
     @PostMapping(path="/{bookId}/reviews", consumes="application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public Review createBookReview(@PathVariable("bookId") Integer bookId, @Valid @RequestBody Review review, BindingResult errors){
-        if(errors.hasErrors())
-	        throw new ValidationException(createErrorString(errors));
-        return bookService.addReviewToBook(bookId, review);  
+    public Review createBookReview(@PathVariable("bookId") Integer bookId, @Valid @RequestBody ReviewDto reviewDto){
+        Review review = getReview(reviewDto);
+        return bookService.addReviewToBook(bookId, review);
     }
 
     @GetMapping("/{bookId}/reviews")
@@ -144,15 +161,6 @@ public class BookController {
     //     errorDetails.setMessage(e.getMessage());
     //     // ResponseEntity(T body, HttpStatusCode status)
     //     return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
-    // }
-
-    // @ExceptionHandler
-    // public ResponseEntity<ErrorDetails> allException(Exception e) {
-    //     ErrorDetails errorDetails = new ErrorDetails();
-    //     errorDetails.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-    //     errorDetails.setMessage(e.getMessage());
-    //     // ResponseEntity(T body, HttpStatusCode status)
-    //     return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     // }
     
 }
