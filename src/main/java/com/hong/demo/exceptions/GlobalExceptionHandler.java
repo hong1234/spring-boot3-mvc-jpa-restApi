@@ -22,6 +22,7 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 // @Slf4j 
 // @ControllerAdvice
@@ -62,12 +63,22 @@ public class GlobalExceptionHandler {
         return errorDetails;
     }
 
-    @ExceptionHandler(AuthenticationException.class)
+    // @ExceptionHandler({AuthenticationException.class})
+    // @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    // public ErrorDetails handleAuthenticationException(AuthenticationException e) {
+    //     ErrorDetails errorDetails = new ErrorDetails();
+    //     errorDetails.setStatus(HttpStatus.UNAUTHORIZED);
+    //     errorDetails.setMessage(e.getMessage());
+    //     return errorDetails;
+    // }
+
+    @ExceptionHandler({AuthenticationException.class, UsernameNotFoundException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ErrorDetails handleAuthenticationException(AuthenticationException e) {
+    public ErrorDetails handleAuthenticationException2(Exception e) {
         ErrorDetails errorDetails = new ErrorDetails();
         errorDetails.setStatus(HttpStatus.UNAUTHORIZED);
-        errorDetails.setMessage(e.getMessage());
+        // errorDetails.setMessage(e.getMessage());
+        errorDetails.setMessage("Bad credentials or username");
         return errorDetails;
     }
 

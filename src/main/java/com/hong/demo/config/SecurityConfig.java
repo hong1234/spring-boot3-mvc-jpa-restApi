@@ -9,20 +9,31 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import org.springframework.security.web.SecurityFilterChain;
 
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+// import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.provisioning.UserDetailsManager;
-
 import javax.sql.DataSource;
+
+import com.hong.demo.domain.UserAccount;
+import com.hong.demo.repository.UserRepository;
+import com.hong.demo.repository.UserManagementRepository;
+
+import org.springframework.boot.CommandLineRunner;
+
+// import org.springframework.security.core.AuthenticationException;
 
 @Configuration
 public class SecurityConfig {
@@ -57,21 +68,36 @@ public class SecurityConfig {
     //     return new InMemoryUserDetailsManager(hong, admin); 
     // }
 
+    // @Bean
+    // UserDetailsService users(DataSource dataSource) {
+    //     // return new JdbcUserDetailsManager(dataSource);
+
+    //     User.UserBuilder builder  = User.builder().passwordEncoder(passwordEncoder()::encode);
+    //     var hong  = builder.username("hong").password("password").roles("USER").build();
+    //     var admin = builder.username("admin").password("admin").roles("ADMIN").build();
+    //     var boss  = builder.username("bigboss").password("bigboss").roles("USER", "ADMIN").build();
+
+    //     var manager = new JdbcUserDetailsManager(dataSource);
+    //     manager.createUser(hong);
+    //     manager.createUser(admin);
+    //     manager.createUser(boss);
+
+    //     return manager;
+    // }
+
     @Bean
-    UserDetailsManager users(DataSource dataSource) {
-        // return new JdbcUserDetailsManager(dataSource);
+    CommandLineRunner initUsers(UserManagementRepository repository) {
+        return args -> {
+            repository.save(new UserAccount("hong", "hong", "ROLE_USER"));
+            repository.save(new UserAccount("admin", "admin", "ROLE_ADMIN"));
+            repository.save(new UserAccount("bigboss", "bigboss", "ROLE_USER", "ROLE_ADMIN"));
+        };
+    } 
 
-        User.UserBuilder builder  = User.builder().passwordEncoder(passwordEncoder()::encode);
-        var hong  = builder.username("hong").password("password").roles("USER").build();
-        var admin = builder.username("admin").password("admin").roles("ADMIN").build();
-        var boss  = builder.username("bigboss").password("bigboss").roles("USER", "ADMIN").build();
-
-        var manager = new JdbcUserDetailsManager(dataSource);
-        manager.createUser(hong);
-        manager.createUser(admin);
-        manager.createUser(boss);
-
-        return manager;
+    @Bean
+    UserDetailsService userService(UserRepository repo) {
+        // UsernameNotFoundException - if the user could not be found or the user has no GrantedAuthority
+	    return username -> repo.findByUsername(username).asUser(passwordEncoder());
     }
 
     @Bean
