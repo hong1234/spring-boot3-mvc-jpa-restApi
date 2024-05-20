@@ -34,6 +34,7 @@ import com.hong.demo.repository.UserManagementRepository;
 import org.springframework.boot.CommandLineRunner;
 
 // import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @Configuration
 public class SecurityConfig {
@@ -106,7 +107,14 @@ public class SecurityConfig {
     @Bean
     UserDetailsService userService(UserRepository repo) {
         // UsernameNotFoundException - if the user could not be found or the user has no GrantedAuthority
-	    return username -> repo.findByUsername(username).asUser(passwordEncoder());
+	    // return username -> repo.findByUsername(username).asUser(passwordEncoder());
+
+        return username -> {
+            UserAccount acc = repo.findByUsername(username);
+            if (acc != null) 
+                return acc.asUser(passwordEncoder());
+            throw new UsernameNotFoundException(username + " not found");
+        };
     }
 
     @Bean

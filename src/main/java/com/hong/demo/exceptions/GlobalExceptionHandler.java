@@ -74,11 +74,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({AuthenticationException.class, UsernameNotFoundException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ErrorDetails handleAuthenticationException2(Exception e) {
+    public ErrorDetails handleAuthenticationException(Exception e) {
         ErrorDetails errorDetails = new ErrorDetails();
         errorDetails.setStatus(HttpStatus.UNAUTHORIZED);
-        // errorDetails.setMessage(e.getMessage());
-        errorDetails.setMessage("Bad credentials or username");
+        errorDetails.setMessage(e.getMessage());
         return errorDetails;
     }
 
