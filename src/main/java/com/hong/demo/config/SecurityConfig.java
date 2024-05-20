@@ -86,13 +86,22 @@ public class SecurityConfig {
     // }
 
     @Bean
-    CommandLineRunner initUsers(UserManagementRepository repository) {
+    CommandLineRunner initUsers(UserRepository repository) {
         return args -> {
             repository.save(new UserAccount("hong", "hong", "ROLE_USER"));
-            repository.save(new UserAccount("admin", "admin", "ROLE_ADMIN"));
-            repository.save(new UserAccount("bigboss", "bigboss", "ROLE_USER", "ROLE_ADMIN"));
+            repository.save(new UserAccount("autor", "autor", "ROLE_AUTOR"));
+            repository.save(new UserAccount("admin", "admin", "ROLE_USER", "ROLE_AUTOR", "ROLE_ADMIN"));
         };
     } 
+
+    // @Bean
+    // CommandLineRunner initUsers(UserManagementRepository repository) {
+    //     return args -> {
+    //         repository.save(new UserAccount("hong", "hong", "ROLE_USER"));
+    //         repository.save(new UserAccount("autor", "autor", "ROLE_AUTOR"));
+    //         repository.save(new UserAccount("admin", "admin", "ROLE_USER", "ROLE_AUTOR", "ROLE_ADMIN"));
+    //     };
+    // } 
 
     @Bean
     UserDetailsService userService(UserRepository repo) {
@@ -107,11 +116,21 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 // .anyRequest().authenticated()
                 // .requestMatchers(HttpMethod.GET, "/api/books/**").hasRole("USER")
-                .requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/books/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/books/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PATCH, "/api/books/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET).permitAll()
+
+                // .requestMatchers(HttpMethod.POST, "/api/books").hasRole("AUTOR")
+                // .requestMatchers(HttpMethod.PUT, "/api/books/{bookId}").hasRole("AUTOR")
+                // .requestMatchers(HttpMethod.DELETE, "/api/books/{bookId}").hasRole("AUTOR")
+
+                .requestMatchers("/api/books/**").hasRole("AUTOR")
+
+                // .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
+
+                // .requestMatchers(HttpMethod.POST, "/api/reviews/{bookId}").hasRole("USER")
+                // .requestMatchers(HttpMethod.PUT, "/api/reviews/{reviewId}").hasRole("USER")
+                // .requestMatchers(HttpMethod.DELETE, "/api/reviews/{reviewId}").hasRole("USER")
+                .requestMatchers("/api/reviews/**").hasRole("USER")
+
                 .anyRequest().denyAll()
             )
             // .httpBasic(Customizer.withDefaults());
