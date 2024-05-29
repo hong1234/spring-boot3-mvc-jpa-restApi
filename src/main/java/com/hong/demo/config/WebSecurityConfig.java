@@ -128,7 +128,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    // @Order(1)
+    // @Order(1) 
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf((csrf) -> csrf.disable())
@@ -136,21 +136,15 @@ public class WebSecurityConfig {
             .securityMatcher("/api/**")
             .authorizeHttpRequests(authorize -> authorize
                 // .anyRequest().authenticated()
-                // .requestMatchers(HttpMethod.GET, "/api/books/**").hasRole("USER")
-                .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/**").authenticated()   
 
-                // .requestMatchers(HttpMethod.POST, "/api/books").hasRole("AUTOR")
-                // .requestMatchers(HttpMethod.PUT, "/api/books/{bookId}").hasRole("AUTOR") 
-                // .requestMatchers(HttpMethod.DELETE, "/api/books/{bookId}").hasRole("AUTOR")   
+                .requestMatchers(HttpMethod.POST, "/api/books/**").hasRole("AUTOR")
+                .requestMatchers(HttpMethod.PUT, "/api/books/**").hasRole("AUTOR")
+                .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
 
-                .requestMatchers("/api/books/**").hasRole("AUTOR")
-
-                // .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
-
-                // .requestMatchers(HttpMethod.POST, "/api/reviews/{bookId}").hasRole("USER")
-                // .requestMatchers(HttpMethod.PUT, "/api/reviews/{reviewId}").hasRole("USER")
-                // .requestMatchers(HttpMethod.DELETE, "/api/reviews/{reviewId}").hasRole("USER")
-                .requestMatchers("/api/reviews/**").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/reviews/**").hasRole("USER")
+                .requestMatchers(HttpMethod.PUT, "/api/reviews/**").hasRole("USER")
+                .requestMatchers(HttpMethod.DELETE, "/api/reviews/**").hasRole("ADMIN")
 
                 .anyRequest().denyAll()
             )
