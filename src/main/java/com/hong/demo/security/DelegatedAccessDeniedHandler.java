@@ -1,5 +1,8 @@
+
 package com.hong.demo.security;
 
+// import jakarta.servlet.*;
+// import jakarta.servlet.http.*;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,20 +12,20 @@ import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
-@Component //("delegatedAuthenticationEntryPoint")
-public class DelegatedAuthenticationEntryPoint implements AuthenticationEntryPoint {
+@Component // ("delegatedAccessDeniedHandler")
+public class DelegatedAccessDeniedHandler implements AccessDeniedHandler {
 
     @Autowired
     @Qualifier("handlerExceptionResolver")
     private HandlerExceptionResolver resolver;
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        resolver.resolveException(request, response, null, authException);
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+        resolver.resolveException(request, response, null, accessDeniedException);
     }
 }

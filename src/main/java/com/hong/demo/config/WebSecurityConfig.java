@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,14 +39,22 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @Configuration
-public class SecurityConfig {
+public class WebSecurityConfig {
+
+    // @Autowired
+    // @Qualifier("customAuthenticationEntryPoint")
+    // private AuthenticationEntryPoint authEntryPoint;
+
+    // @Autowired
+    // @Qualifier("customAccessDeniedHandler")
+    // private AccessDeniedHandler accessDeniedHandler;
 
     @Autowired
     @Qualifier("delegatedAuthenticationEntryPoint")
-    AuthenticationEntryPoint authEntryPoint;
+    private AuthenticationEntryPoint authEntryPoint;
 
     @Autowired
-    @Qualifier("customAccessDeniedHandler")
+    @Qualifier("delegatedAccessDeniedHandler")
     private AccessDeniedHandler accessDeniedHandler;
 
     @Bean
@@ -118,17 +128,20 @@ public class SecurityConfig {
     }
 
     @Bean
+    // @Order(1)
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf((csrf) -> csrf.disable())
+            .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .securityMatcher("/api/**")
             .authorizeHttpRequests(authorize -> authorize
                 // .anyRequest().authenticated()
                 // .requestMatchers(HttpMethod.GET, "/api/books/**").hasRole("USER")
-                .requestMatchers(HttpMethod.GET).permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
 
                 // .requestMatchers(HttpMethod.POST, "/api/books").hasRole("AUTOR")
-                // .requestMatchers(HttpMethod.PUT, "/api/books/{bookId}").hasRole("AUTOR")
-                // .requestMatchers(HttpMethod.DELETE, "/api/books/{bookId}").hasRole("AUTOR")
+                // .requestMatchers(HttpMethod.PUT, "/api/books/{bookId}").hasRole("AUTOR") 
+                // .requestMatchers(HttpMethod.DELETE, "/api/books/{bookId}").hasRole("AUTOR")   
 
                 .requestMatchers("/api/books/**").hasRole("AUTOR")
 
@@ -149,5 +162,16 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+    // @Bean                                                            
+	// public SecurityFilterChain formLoginFilterChain(HttpSecurity http) throws Exception {
+	// 	http
+	// 		.authorizeHttpRequests(authorize -> authorize
+    //             .requestMatchers("/login").permitAll()
+	// 			.anyRequest().authenticated()
+	// 		)
+	// 		.formLogin(Customizer.withDefaults());
+	// 	return http.build();
+	// }
 
 }

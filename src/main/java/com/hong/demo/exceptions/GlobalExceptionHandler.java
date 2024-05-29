@@ -24,6 +24,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import org.springframework.web.servlet.NoHandlerFoundException;
+
 // @Slf4j 
 // @ControllerAdvice
 @RestControllerAdvice
@@ -60,6 +62,16 @@ public class GlobalExceptionHandler {
         ErrorDetails errorDetails = new ErrorDetails();
         errorDetails.setStatus(HttpStatus.BAD_REQUEST);
         errorDetails.setErrorDetails(errors);
+        return errorDetails;
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ErrorDetails handlerNotFoundException(NoHandlerFoundException e) {
+        ErrorDetails errorDetails = new ErrorDetails();
+        errorDetails.setStatus(HttpStatus.NOT_FOUND);
+        errorDetails.setMessage(e.getMessage());
+        // errorDetails.setMessage("URL is not correct");
         return errorDetails;
     }
 
