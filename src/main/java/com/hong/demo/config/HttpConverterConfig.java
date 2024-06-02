@@ -9,9 +9,12 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 // import org.springframework.http.converter.HttpMessageConverter;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 
 import java.time.format.DateTimeFormatter;
 
@@ -36,12 +39,24 @@ public class HttpConverterConfig {
     @Bean
     @Primary
     public ObjectMapper objectMapper() {
-        JavaTimeModule module = new JavaTimeModule();
-        module.addSerializer(new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DATETIME_FORMAT)));
-        ObjectMapper objMapper = new ObjectMapper();
-        objMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        objMapper.registerModule(module);
-        return objMapper; 
+        Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
+
+        // formatter
+        // DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // DateTimeFormatter dateTimeFormatter =  DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATETIME_FORMAT);
+
+        // serializers
+        // builder.serializers(new LocalDateSerializer(dateFormatter));
+        builder.serializers(new LocalDateTimeSerializer(dateTimeFormatter));
+        builder.serializationInclusion(JsonInclude.Include.NON_NULL);
+
+        // deserializers
+        // builder.deserializers(new LocalDateDeserializer(dateFormatter));
+        builder.deserializers(new LocalDateTimeDeserializer(dateTimeFormatter));
+
+        return builder.build();
     }
 
     // @Bean
