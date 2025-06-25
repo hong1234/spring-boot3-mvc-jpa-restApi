@@ -57,78 +57,8 @@ public class WebSecurityConfig {
     @Qualifier("delegatedAccessDeniedHandler")
     private AccessDeniedHandler accessDeniedHandler;
 
-    @Bean
-    public static PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
-
-    // @Bean
-    // public UserDetailsService userDetailsService(){
-    //     UserDetails hong = User.builder()
-    //             .username("hong")
-    //             .password(passwordEncoder().encode("password"))
-    //             .roles("USER")
-    //             .build();
-
-    //     UserDetails admin = User.builder()
-    //             .username("admin")
-    //             .password(passwordEncoder().encode("admin"))
-    //             .roles("ADMIN")
-    //             .build();
-
-    //     return new InMemoryUserDetailsManager(hong, admin); 
-    // }
-
-    // @Bean
-    // UserDetailsService users(DataSource dataSource) {
-    //     // return new JdbcUserDetailsManager(dataSource);
-
-    //     User.UserBuilder builder  = User.builder().passwordEncoder(passwordEncoder()::encode);
-    //     var hong  = builder.username("hong").password("password").roles("USER").build();
-    //     var admin = builder.username("admin").password("admin").roles("ADMIN").build();
-    //     var boss  = builder.username("bigboss").password("bigboss").roles("USER", "ADMIN").build();
-
-    //     var manager = new JdbcUserDetailsManager(dataSource);
-    //     manager.createUser(hong);
-    //     manager.createUser(admin);
-    //     manager.createUser(boss);
-
-    //     return manager;
-    // }
-
-    @Bean
-    CommandLineRunner initUsers(UserRepository repository) {
-        return args -> {
-            repository.save(new UserAccount("hong", "hong", "ROLE_USER"));
-            repository.save(new UserAccount("autor", "autor", "ROLE_AUTOR"));
-            repository.save(new UserAccount("admin", "admin", "ROLE_USER", "ROLE_AUTOR", "ROLE_ADMIN"));
-        };
-    } 
-
-    // @Bean
-    // CommandLineRunner initUsers(UserManagementRepository repository) {
-    //     return args -> {
-    //         repository.save(new UserAccount("hong", "hong", "ROLE_USER"));
-    //         repository.save(new UserAccount("autor", "autor", "ROLE_AUTOR"));
-    //         repository.save(new UserAccount("admin", "admin", "ROLE_USER", "ROLE_AUTOR", "ROLE_ADMIN"));
-    //     };
-    // } 
-
-    @Bean
-    UserDetailsService userService(UserRepository repo) {
-        // UsernameNotFoundException - if the user could not be found or the user has no GrantedAuthority
-	    // return username -> repo.findByUsername(username).asUser(passwordEncoder());
-
-        return username -> {
-            UserAccount acc = repo.findByUsername(username);
-            if (acc != null) 
-                return acc.asUser(passwordEncoder());
-            throw new UsernameNotFoundException(username + " not found");
-        };
-    }
-
-    @Bean
     // @Order(1) 
+    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf((csrf) -> csrf.disable())
@@ -149,7 +79,6 @@ public class WebSecurityConfig {
                 .anyRequest().denyAll()
             )
             // .httpBasic(Customizer.withDefaults());
-
             .httpBasic(basic -> basic.authenticationEntryPoint(authEntryPoint))
             .exceptionHandling(customizer -> customizer.accessDeniedHandler(accessDeniedHandler))
             ;
@@ -157,15 +86,69 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-    // @Bean                                                            
-	// public SecurityFilterChain formLoginFilterChain(HttpSecurity http) throws Exception {
-	// 	http
-	// 		.authorizeHttpRequests(authorize -> authorize
-    //             .requestMatchers("/login").permitAll()
-	// 			.anyRequest().authenticated()
-	// 		)
-	// 		.formLogin(Customizer.withDefaults());
-	// 	return http.build();
-	// }
+    @Bean
+    public static PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    CommandLineRunner initUsers(UserRepository repository) {
+        return args -> {
+            repository.save(new UserAccount("user", "user", "ROLE_USER"));
+            repository.save(new UserAccount("autor", "autor", "ROLE_AUTOR"));
+            repository.save(new UserAccount("admin", "admin", "ROLE_USER", "ROLE_AUTOR", "ROLE_ADMIN"));
+        };
+    }
+
+    @Bean
+    UserDetailsService userService(UserRepository repo) {
+        // UsernameNotFoundException - if the user could not be found or the user has no GrantedAuthority
+	    // return username -> repo.findByUsername(username).asUser(passwordEncoder());
+
+        return username -> repo.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"))
+                .asUser(passwordEncoder());
+
+        // return username -> {
+        //     UserAccount acc = repo.findByUsername(username);
+        //     if (acc != null) 
+        //         return acc.asUser(passwordEncoder());
+        //     throw new UsernameNotFoundException(username + " not found");
+        // };
+    }
+
+    // @Bean
+    // public UserDetailsService userDetailsService(){
+    //     UserDetails user = User.builder()
+    //             .username("user")
+    //             .password(passwordEncoder().encode("userPW"))
+    //             .roles("USER")
+    //             .build();
+
+    //     UserDetails admin = User.builder()
+    //             .username("admin")
+    //             .password(passwordEncoder().encode("adminPW"))
+    //             .roles("ADMIN")
+    //             .build();
+
+    //     return new InMemoryUserDetailsManager(user, admin); 
+    // }
+
+    // @Bean
+    // UserDetailsService users(DataSource dataSource) {
+    //     // return new JdbcUserDetailsManager(dataSource);
+
+    //     User.UserBuilder builder  = User.builder().passwordEncoder(passwordEncoder()::encode);
+    //     var user  = builder.username("user").password("user").roles("USER").build();
+    //     var autor  = builder.username("autor").password("autor").roles("AUTOR").build();
+    //     var admin = builder.username("admin").password("admin").roles("USER", "AUTOR", "ADMIN").build();
+
+    //     var manager = new JdbcUserDetailsManager(dataSource);
+    //     manager.createUser(user);
+    //     manager.createUser(autor);
+    //     manager.createUser(admin);
+
+    //     return manager;
+    // }
 
 }
