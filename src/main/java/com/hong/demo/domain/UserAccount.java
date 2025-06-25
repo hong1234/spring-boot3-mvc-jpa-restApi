@@ -43,13 +43,19 @@ public class UserAccount {
       .toList();
   }
 
-  public UserDetails asUser(PasswordEncoder passwordEncoder) {
-    User.UserBuilder builder = User.builder().passwordEncoder(passwordEncoder::encode);
-    return builder
-      .username(getUsername())
-      .password(getPassword())
-      .authorities(getAuthorities())
-      .build();
+  public UserDetails asUser() {
+    // User.UserBuilder builder = User.builder().passwordEncoder(passwordEncoder::encode);
+    // return builder
+    //   .username(getUsername())
+    //   .password(getPassword())
+    //   .authorities(getAuthorities())
+    //   .build();
+
+    return User
+            .withUsername(getUsername())
+            .password(getPassword())
+            .authorities(getAuthorities())
+            .build();
   }
 
   public Long getId() {

@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -88,15 +89,22 @@ public class WebSecurityConfig {
 
     @Bean
     public static PasswordEncoder passwordEncoder(){
+        // return NoOpPasswordEncoder.getInstance();
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     CommandLineRunner initUsers(UserRepository repository) {
+        // return args -> {
+        //     repository.save(new UserAccount("user", "user", "ROLE_USER"));
+        //     repository.save(new UserAccount("autor", "autor", "ROLE_AUTOR"));
+        //     repository.save(new UserAccount("admin", "admin", "ROLE_USER", "ROLE_AUTOR", "ROLE_ADMIN"));
+        // };
+
         return args -> {
-            repository.save(new UserAccount("user", "user", "ROLE_USER"));
-            repository.save(new UserAccount("autor", "autor", "ROLE_AUTOR"));
-            repository.save(new UserAccount("admin", "admin", "ROLE_USER", "ROLE_AUTOR", "ROLE_ADMIN"));
+            repository.save(new UserAccount("user", passwordEncoder().encode("user"), "ROLE_USER"));
+            repository.save(new UserAccount("autor", passwordEncoder().encode("autor"), "ROLE_AUTOR"));
+            repository.save(new UserAccount("admin", passwordEncoder().encode("admin"), "ROLE_USER", "ROLE_AUTOR", "ROLE_ADMIN"));
         };
     }
 
@@ -107,12 +115,12 @@ public class WebSecurityConfig {
 
         return username -> repo.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"))
-                .asUser(passwordEncoder());
+                .asUser();
 
         // return username -> {
         //     UserAccount acc = repo.findByUsername(username);
         //     if (acc != null) 
-        //         return acc.asUser(passwordEncoder());
+        //         return acc.asUser();
         //     throw new UsernameNotFoundException(username + " not found");
         // };
     }
