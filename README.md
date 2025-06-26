@@ -1,18 +1,23 @@
-# secured rest api sb3
+# SB3 Basic Authen secured restful Api
 
-cd C:\HONG\JAVATest202504\TESTh3\spring-boot3-mvc-jpa-restApi
+git clone https://github.com/hong1234/spring-boot3-mvc-jpa-restApi
+
+cd spring-boot3-mvc-jpa-restApi
 
 ## run
 
-./mvnw springboot:run  // run
+./mvnw spring-boot:run
 
-## users
+## users 
 
-"user", "user", "ROLE_USER"    // user
-"autor", "autor", "ROLE_AUTOR" // autor
+"user", "user", "ROLE_USER" 
+
+"autor", "autor", "ROLE_AUTOR"
+
 "admin", "admin", "ROLE_USER", "ROLE_AUTOR", "ROLE_ADMIN" // admin, autor, user
 
-# actions
+
+# Actions
 
 ## add a book 
 
@@ -23,7 +28,7 @@ POST http://localhost:8000/api/books
     "content": "so you must begin"
 }
 
-autor or admin // user role
+authenticated user // autor or admin role
 
 ## get all books
 
@@ -49,6 +54,7 @@ POST http://localhost:8000/api/reviews/2
 }
 
 authenticated user // user or admin role
+
 
 # UI SERVER
 
