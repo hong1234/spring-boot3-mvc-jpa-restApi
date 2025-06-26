@@ -50,18 +50,33 @@ POST http://localhost:8000/api/reviews/2
 
 authenticated user // user or admin role
 
+# UI SERVER
 
 ## install UI app javascript
 
 git clone https://github.com/hong1234/BookReviewReactUI_v2J.git
 
-// cd C:\HONG\JAVASCRIPTtest\HUebung\BookReviewReactUI_v2J
-
 cd BookReviewReactUI_v2J
 
 npm install
 
-npm start   // run dev UI-server
+## run dev UI-server
+
+npm start   
+
+
+
+## building asserts
+
+npm run build
+
+## run prod UI-server
+
+php -S localhost:3000 -t build/
+
+## url in browser
+
+http://localhost:3000/
 
 
 
