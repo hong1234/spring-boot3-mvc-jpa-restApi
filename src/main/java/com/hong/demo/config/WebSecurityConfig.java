@@ -1,5 +1,6 @@
 package com.hong.demo.config;
 
+import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -7,7 +8,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import org.springframework.security.config.Customizer;
+// import org.springframework.security.config.Customizer;
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -39,6 +42,11 @@ import org.springframework.boot.CommandLineRunner;
 // import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+
 @Configuration
 public class WebSecurityConfig {
 
@@ -61,13 +69,15 @@ public class WebSecurityConfig {
     // @Order(1) 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf((csrf) -> csrf.disable())
+        http.csrf((csrf) -> csrf.disable())
+            .cors(withDefaults())
+            // .cors(c -> c.configurationSource(corsConfigurationSource()))
             .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .securityMatcher("/api/**")
+            // .securityMatcher("/api/**")
             .authorizeHttpRequests(authorize -> authorize
                 // .anyRequest().authenticated()
                 .requestMatchers(HttpMethod.GET, "/api/**").authenticated()   
+                // .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
 
                 .requestMatchers(HttpMethod.POST, "/api/books/**").hasRole("AUTOR")
                 .requestMatchers(HttpMethod.PUT, "/api/books/**").hasRole("AUTOR")
@@ -156,7 +166,23 @@ public class WebSecurityConfig {
     //     manager.createUser(autor);
     //     manager.createUser(admin);
 
-    //     return manager;
+    //     return manager; 
     // }
+
+    @Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration config = new CorsConfiguration();
+        // config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+		config.setAllowedOrigins(Arrays.asList("*"));
+		config.setAllowedMethods(Arrays.asList("*"));
+		config.setAllowedHeaders(Arrays.asList("*"));
+		config.setAllowCredentials(false);
+		config.applyPermitDefaultValues();
+        
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", config);
+		return source;
+	}
 
 }
