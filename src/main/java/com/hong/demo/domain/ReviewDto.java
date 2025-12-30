@@ -41,4 +41,13 @@ public class ReviewDto {
     @StatusValidation(name="likeStatus")  // throws a MethodArgumentNotValidException exception.
     private String likeStatus;
 
+    public Review asReview(){
+        Review review = new Review();
+        review.setName(getName());
+        review.setEmail(getEmail());
+        review.setContent(getContent());
+        review.setLikeStatus(LikeStatus.valueOf(getLikeStatus()));
+        return review;
+    }
+
 }

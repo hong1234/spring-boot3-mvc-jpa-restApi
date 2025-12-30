@@ -21,9 +21,9 @@ import jakarta.persistence.*;
 
 // import jakarta.validation.constraints.*;
 // import jakarta.validation.constraints.NotNull;
-// import jakarta.validation.constraints.NotBlank;
-// import jakarta.validation.constraints.Email;
-// import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 // import com.fasterxml.jackson.annotation.JsonFormat;
@@ -41,18 +41,21 @@ public class Review {
     private Integer id;
 
     // @NotNull
-    // @Size(min = 3, max = 50, message = "must be minimum 3 characters, and maximum 50 characters long")
+    @NotBlank
+    @Size(min = 3, max = 50, message = "name must be minimum 3, maximum 50 characters long")
     @Column(name = "name", nullable = false, length = 150)
     private String name;
 
     // @NotNull
-    // @Email(message="Please provide a valid email")
+    @NotBlank
+    @Email(message="Please provide a valid email")
     @Column(name = "email", nullable = false, length = 150)
     private String email;
 
     // @Lob
     // @NotNull
-    // @Size(min = 3, max = 500, message = "must be minimum 3 characters, and maximum 500 characters long")
+    @NotBlank
+    @Size(min = 4, max = 500, message = "content must be minimum 3, maximum 500 characters long")
     @Column(name = "content", nullable = false, columnDefinition="TEXT")
     private String content;
 

@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 public class ErrorDetails {
 
 	private HttpStatus status;
-	private Map<String, String> errorDetails = new HashMap<>();
+	// private Map<String, String> errorDetails = new HashMap<>();
+	private Map<String, Object> errorDetails = new HashMap<>(); 
  
 	public HttpStatus getStatus() {
 		return status;
@@ -18,14 +19,14 @@ public class ErrorDetails {
 		this.status = status;
 	}
 
-	public Map<String, String> getErrorDetails() {
+	public Map<String, Object> getErrorDetails() {
 		return errorDetails;
 	}
-	public void setErrorDetails(Map<String, String> errorDetails) {
+	public void setErrorDetails(Map<String, Object> errorDetails) {
 		this.errorDetails = errorDetails;
 	}
 
-	public void setMessage(String message) {
+	public void setMessage(Object message) {
 		errorDetails.put("exception", message);
 	}
 

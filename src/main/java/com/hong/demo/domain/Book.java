@@ -41,14 +41,16 @@ public class Book {
     @Column(name = "id", updatable = false, nullable = false)
     private Integer id;
     
-    @NotNull
-    @Size(min = 3, max = 50, message = "must be minimum 3 characters, and maximum 50 characters long")
+    // @NotNull
+    @NotBlank
+    @Size(min = 4, max = 50, message = "title must be minimum 4, maximum 50 characters long")
     @Column(name = "title", nullable = false, length = 150)
     private String title;
 
     // @Lob
-    @NotNull
-    @Size(min = 3, max = 500, message = "must be minimum 3 characters, and maximum 500 characters long")
+    // @NotNull
+    @NotBlank
+    @Size(min = 4, max = 500, message = "content must be minimum 4, maximum 500 characters long")
     @Column(name = "content", nullable = false, columnDefinition="TEXT")
     private String content;
 

@@ -3,6 +3,9 @@ package com.hong.demo.controller;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
+// import lombok.extern.slf4j.Slf4j;
+
 import java.net.URI;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -41,56 +44,62 @@ import com.hong.demo.service.BookService;
 import com.hong.demo.exceptions.ResourceNotFoundException;
 import com.hong.demo.exceptions.ValidationException;
 import com.hong.demo.exceptions.ErrorDetails; 
-
-import lombok.AllArgsConstructor;
-// import lombok.extern.slf4j.Slf4j;
-
+import com.hong.demo.exceptions.BookServiceException;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping(path=BookController.CONTROLLER_PATH, produces="application/json")
-// @CrossOrigin(origins = {"http://localhost:3000", "http://uicloud.com"})
+// @CrossOrigin(origins = {"http://localhost:3000", "http://uicloud.com"}) 
 public class BookController {
 
-    public static final String CONTROLLER_PATH = "/api";
+    public static final String CONTROLLER_PATH = "/api/books";
 
     private final BookService bookService;
 
     // books -----
 
-    @GetMapping("/books")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Iterable<Book> listBooks(){
 	    return bookService.getAllBooks();
     }
 
-    @GetMapping("/books/search")
+    @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public Iterable<Book> searchBooksByTitle(@RequestParam String title){
+    public Iterable<Book> searchBooksByTitle(@RequestParam String title){  
         return bookService.searchBooksByTitle(title);
     }
 
-    @GetMapping("/books/{bookId}")
+    @GetMapping("/{bookId}")
     @ResponseStatus(HttpStatus.OK)
-    public Book getBookById(@PathVariable("bookId") Integer bookId){
+    public Book getBookById(@PathVariable("bookId") Integer bookId) throws BookServiceException {
         return bookService.getBookById(bookId);
     }
-
-    @PostMapping(path="/books", consumes="application/json")
+    
+    // @PostMapping(path="", consumes="application/json")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Book createBook(@Valid @RequestBody Book book, BindingResult errors){
-        if(errors.hasErrors())
-            throw new ValidationException(createErrorString(errors));
+    public Book createBook(
+        @RequestBody @Valid  Book book //, 
+        // BindingResult result
+    ) throws BookServiceException {
+        // if(result.hasErrors())
+        //     throw new ValidationException(createErrorString(result));
         return bookService.storeBook(book);
         // URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedBook.getId()).toUri();
         // return ResponseEntity.created(location).body(savedBook);
     }
 
-    @PutMapping(path="/books/{bookId}", consumes="application/json")
+    // @PutMapping(path="/{bookId}", consumes="application/json")
+    @PutMapping("/{bookId}")
     @ResponseStatus(HttpStatus.OK)
-    public Book updateBook(@PathVariable("bookId") Integer bookId, @Valid @RequestBody  Book book, BindingResult errors){
-    	if(errors.hasErrors())
-            throw new ValidationException(createErrorString(errors));
+    public Book updateBook(
+        @PathVariable("bookId") Integer bookId, 
+        @RequestBody @Valid Book book //,
+        // BindingResult result
+    ) throws BookServiceException { 
+    	// if(result.hasErrors())
+        //     throw new ValidationException(createErrorString(result));
         return bookService.updateBook(bookId, book);
         // Book updatedBook = bookService.updateBook(bookId, book);
         // URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("").buildAndExpand(updatedBook.getId()).toUri();
@@ -103,17 +112,17 @@ public class BookController {
 	//     if (patch.getTitle() != null) {}
     // }
 
-    @DeleteMapping("/books/{bookId}")
+    @DeleteMapping("/{bookId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBook(@PathVariable("bookId") Integer bookId){
+    public void deleteBook(@PathVariable("bookId") Integer bookId) throws BookServiceException {
         bookService.deleteBook(bookId);
     }
 
     // reviews -----
 
-    @GetMapping("/reviews/{bookId}")
+    @GetMapping("/{bookId}/reviews")
     @ResponseStatus(HttpStatus.OK)
-    public List<Review> getReviewsOfBook(@PathVariable("bookId") Integer bookId){
+    public List<Review> getReviewsOfBook(@PathVariable("bookId") Integer bookId) throws BookServiceException {
     	return bookService.getBookReviews(bookId);
     }
 
@@ -125,38 +134,33 @@ public class BookController {
     //     return bookService.addReviewToBook(bookId, review);  
     // }
 
-    private Review getReview(ReviewDto reviewDto){
-        Review review = new Review();
-        review.setName(reviewDto.getName());
-        review.setEmail(reviewDto.getEmail());
-        review.setContent(reviewDto.getContent());
-        review.setLikeStatus(LikeStatus.valueOf(reviewDto.getLikeStatus()));
-        return review;
-    }
-
-    @PostMapping(path="/reviews/{bookId}", consumes="application/json")
+    // @PostMapping(path="/{bookId}/reviews", consumes="application/json")
+    @PostMapping("/{bookId}/reviews")
     @ResponseStatus(HttpStatus.CREATED)
-    public Review addReviewToBook(@PathVariable("bookId") Integer bookId, @Valid @RequestBody ReviewDto reviewDto){
-        Review review = getReview(reviewDto);
+    public Review addReviewToBook(
+        @PathVariable("bookId") Integer bookId, 
+        @RequestBody @Valid ReviewDto reviewDto
+    ) throws BookServiceException {
+        Review review = reviewDto.asReview();
         return bookService.addReviewToBook(bookId, review);
     }
     
     @DeleteMapping("/reviews/{reviewId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBookReview(@PathVariable("reviewId") Integer reviewId){
+    public void deleteBookReview(@PathVariable("reviewId") Integer reviewId) throws BookServiceException {
         bookService.deleteReview(reviewId);
     }
 
-    private String createErrorString(BindingResult result) {
-        StringBuilder sb =  new StringBuilder();
-        result.getAllErrors().forEach(error -> {
-            if(error instanceof FieldError) {
-                FieldError err= (FieldError) error;
-                sb.append(err.getField()).append(" ").append(err.getDefaultMessage());
-            }
-        });
-        return sb.toString();
-    }
+    // private String createErrorString(BindingResult result) {
+    //     StringBuilder sb =  new StringBuilder();
+    //     result.getAllErrors().forEach(error -> {
+    //         if(error instanceof FieldError) {
+    //             FieldError err= (FieldError) error;
+    //             sb.append(err.getField()).append(" ").append(err.getDefaultMessage());
+    //         }
+    //     });
+    //     return sb.toString();
+    // }
     
     // @ExceptionHandler
     // public ResponseEntity<ErrorDetails> notfoundException(ResourceNotFoundException e) {

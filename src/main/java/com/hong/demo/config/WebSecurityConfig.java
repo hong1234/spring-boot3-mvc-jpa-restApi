@@ -75,19 +75,20 @@ public class WebSecurityConfig {
             .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             // .securityMatcher("/api/**")
             .authorizeHttpRequests(authorize -> authorize
-                // .anyRequest().authenticated()
-                .requestMatchers(HttpMethod.GET, "/api/**").authenticated()   
+                
+                // .requestMatchers(HttpMethod.GET, "/api/**").authenticated()   
                 // .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
 
                 .requestMatchers(HttpMethod.POST, "/api/books/**").hasRole("AUTOR")
                 .requestMatchers(HttpMethod.PUT, "/api/books/**").hasRole("AUTOR")
                 .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
 
-                .requestMatchers(HttpMethod.POST, "/api/reviews/**").hasRole("USER")
-                .requestMatchers(HttpMethod.PUT, "/api/reviews/**").hasRole("USER")
-                .requestMatchers(HttpMethod.DELETE, "/api/reviews/**").hasRole("ADMIN")
+                // .requestMatchers(HttpMethod.POST, "/api/books/{bookId}/reviews/**").hasRole("USER")
+                // .requestMatchers(HttpMethod.PUT, "/api/books/{bookId}/reviews/**").hasRole("USER")
+                // .requestMatchers(HttpMethod.DELETE, "/api/books/reviews/{reviewId}").hasRole("ADMIN")
 
-                .anyRequest().denyAll()
+                // .anyRequest().denyAll()
+                .anyRequest().authenticated()
             )
             // .httpBasic(Customizer.withDefaults());
             .httpBasic(basic -> basic.authenticationEntryPoint(authEntryPoint))
