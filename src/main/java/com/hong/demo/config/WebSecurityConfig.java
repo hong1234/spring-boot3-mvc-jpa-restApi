@@ -79,13 +79,9 @@ public class WebSecurityConfig {
                 // .requestMatchers(HttpMethod.GET, "/api/**").authenticated()   
                 // .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
 
-                // .requestMatchers(HttpMethod.POST, "/api/books/**").hasRole("AUTOR")
-                // .requestMatchers(HttpMethod.PUT, "/api/books/**").hasRole("AUTOR")
-                // .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
-
                 .requestMatchers(HttpMethod.POST, "/api/books/**").hasAnyRole("AUTOR", "ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/books/**").hasAnyRole("AUTOR", "ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasAnyRole("AUTOR", "ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/books/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
 
                 // .requestMatchers(HttpMethod.POST, "/api/books/{bookId}/reviews/**").hasRole("USER")
                 .requestMatchers(HttpMethod.PUT, "/api/books/{bookId}/reviews/{reviewId}").hasRole("ADMIN")
@@ -108,39 +104,24 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    CommandLineRunner initUsers(UserManagementRepository repository) {
-        return args -> {
-            repository.save(new UserAccount("user", passwordEncoder().encode("user"), "ROLE_USER"));
-            repository.save(new UserAccount("autor", passwordEncoder().encode("autor"), "ROLE_AUTOR"));
-            // repository.save(new UserAccount("admin", passwordEncoder().encode("admin"), "ROLE_USER", "ROLE_AUTOR", "ROLE_ADMIN"));
-            repository.save(new UserAccount("admin", passwordEncoder().encode("admin"), "ROLE_ADMIN"));
-            
-            // repository.save(
-            //     UserAccount.builder()
-            //     .username("user")
-            //     .password(passwordEncoder().encode("user"))
-            //     .authority("ROLE_USER")
-            //     .build()
-            // );
+    // @Bean
+    // CommandLineRunner initUsers(UserManagementRepository repository) {
+    //     return args -> {
+    //         repository.save(new UserAccount("user", passwordEncoder().encode("user"), "ROLE_USER"));
+    //         repository.save(new UserAccount("autor", passwordEncoder().encode("autor"), "ROLE_AUTOR"));
+    //         repository.save(new UserAccount("admin", passwordEncoder().encode("admin"), "ROLE_ADMIN"));
 
-            // repository.save(
-            //     UserAccount.builder()
-            //     .username("autor")
-            //     .password(passwordEncoder().encode("autor"))
-            //     .authority("ROLE_AUTOR")
-            //     .build()
-            // );
+    //         repository.save(new UserAccount("admin", passwordEncoder().encode("admin"), "ROLE_USER", "ROLE_AUTOR", "ROLE_ADMIN"));
 
-            // repository.save(
-            //     UserAccount.builder()
-            //     .username("admin")
-            //     .password(passwordEncoder().encode("admin"))
-            //     .authority("ROLE_ADMIN")
-            //     .build()
-            // );
-        };
-    }
+    //         repository.save(
+    //             UserAccount.builder()
+    //             .username("admin")
+    //             .password(passwordEncoder().encode("admin"))
+    //             .authority("ROLE_ADMIN")
+    //             .build()
+    //         );
+    //     };
+    // }
 
     @Bean
     UserDetailsService userService(UserRepository repo) {
