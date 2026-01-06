@@ -42,9 +42,6 @@ public class HttpConverterConfig {
         Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
 
         // formatter
-        // DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        // DateTimeFormatter dateTimeFormatter =  DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATETIME_FORMAT);
 
         // serializers

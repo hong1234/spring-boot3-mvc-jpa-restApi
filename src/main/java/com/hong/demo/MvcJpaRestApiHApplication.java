@@ -35,9 +35,9 @@ public class MvcJpaRestApiHApplication implements CommandLineRunner {
 
 	@Override
     public void run(String... args) throws Exception {
-		repository.save(new UserAccount("user", passwordEncoder.encode("user"), "ROLE_USER"));
-        repository.save(new UserAccount("autor", passwordEncoder.encode("autor"), "ROLE_AUTOR"));
-        repository.save(new UserAccount("admin", passwordEncoder.encode("admin"), "ROLE_ADMIN"));
+		// repository.save(new UserAccount("user", passwordEncoder.encode("user"), "ROLE_USER"));
+        // repository.save(new UserAccount("autor", passwordEncoder.encode("autor"), "ROLE_AUTOR"));
+        // repository.save(new UserAccount("admin", passwordEncoder.encode("admin"), "ROLE_ADMIN"));
 	}
 
 }

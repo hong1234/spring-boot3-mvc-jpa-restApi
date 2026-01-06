@@ -63,7 +63,7 @@ public class Review {
     // @EnumNamePattern(regexp = "Low|Medium|High")
     @Enumerated(EnumType.STRING)
     @Column(name = "like_status")
-    private LikeStatus likeStatus;
+    private LikeStatus likeStatus; 
 
     // @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="Europe/Berlin")
     @Column(name="created_on", columnDefinition = "TIMESTAMP")

@@ -1,6 +1,7 @@
 package com.hong.demo.config;
 
 import java.util.Arrays;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -69,8 +70,21 @@ public class WebSecurityConfig {
     // @Order(1) 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        http.cors(c -> {
+            CorsConfigurationSource source = request -> {
+                CorsConfiguration config = new CorsConfiguration();
+                // config.setAllowedOrigins(List.of("http://localhost:3000", "example.com", "example.org"));
+                config.setAllowedOrigins(List.of("*"));
+                config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+                config.setAllowedHeaders(List.of("*"));
+                return config;
+            };
+            c.configurationSource(source);
+        });
+
         http.csrf((csrf) -> csrf.disable())
-            .cors(withDefaults())
+            // .cors(withDefaults())
             // .cors(c -> c.configurationSource(corsConfigurationSource()))
             .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             // .securityMatcher("/api/**")
@@ -174,20 +188,20 @@ public class WebSecurityConfig {
     //     return manager; 
     // }
 
-    @Bean
-	public CorsConfigurationSource corsConfigurationSource() {
+    // @Bean
+	// public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration config = new CorsConfiguration();
-        // config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-		config.setAllowedOrigins(Arrays.asList("*"));
-		config.setAllowedMethods(Arrays.asList("*"));
-		config.setAllowedHeaders(Arrays.asList("*"));
-		config.setAllowCredentials(false);
-		config.applyPermitDefaultValues();
+    //     CorsConfiguration config = new CorsConfiguration();
+    //     // config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+	// 	config.setAllowedOrigins(Arrays.asList("*"));
+	// 	config.setAllowedMethods(Arrays.asList("*"));
+	// 	config.setAllowedHeaders(Arrays.asList("*"));
+	// 	config.setAllowCredentials(false);
+	// 	config.applyPermitDefaultValues();
         
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", config);
-		return source;
-	}
+	// 	UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	// 	source.registerCorsConfiguration("/**", config);
+	// 	return source; 
+	// }
 
 }
